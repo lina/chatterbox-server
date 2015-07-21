@@ -1,5 +1,9 @@
 /* Import node's http module: */
 var http = require("http");
+// var requestHandler = require("./request-handler.js");
+
+var handleRequest = require("./request-handler.js").requestHandler; //original
+// var chatApp = require("../client/app.js").chatApp;
 
 
 // Every server needs to listen on a port with a unique number. The
@@ -7,12 +11,14 @@ var http = require("http");
 // normally already claimed by another server and/or not accessible
 // so we'll use a standard testing port like 3000, other common development
 // ports are 8080 and 1337.
-var port = 3000;
+var port = 3000; //original
+// var port = 443;
 
 // For now, since you're running this server on your local machine,
 // we'll have it listen on the IP address 127.0.0.1, which is a
 // special address that always refers to localhost.
-var ip = "127.0.0.1";
+var ip = "127.0.0.1"; // original
+// var ip = "api.parse.com";
 
 
 
@@ -22,17 +28,19 @@ var ip = "127.0.0.1";
 // incoming requests.
 //
 // After creating the server, we will tell it to listen on the given port and IP. */
-var server = http.createServer(handleRequest);
+// var server = http.createServer(handleRequest);
+var server = http.createServer(handleRequest).listen(3000);//original
+// var server = http.createServer(chatApp).listen(3000);
+
 console.log("Listening on http://" + ip + ":" + port);
 server.listen(port, ip);
-
 // To start this server, run:
 //
 //   node basic-server.js
 //
 // on the command line.
 //
-// To connect to the server, load http://127.0.0.1:3000 in your web
+// To connect to the server, load    in your web
 // browser.
 //
 // server.listen() will continue running as long as there is the
