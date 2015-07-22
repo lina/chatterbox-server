@@ -13,6 +13,7 @@ this file and include it in basic-server.js so that it actually works.
 **************************************************************/
 // var handleRequest = require('requestHandler').handleRequest;
 
+var array = [];
 var requestHandler = function(request, response) {
   // Request and Response come from node's http module.
   //
@@ -55,62 +56,39 @@ var requestHandler = function(request, response) {
   // node to actually send all the data over to the client.
   // response.end("Hello, World!");
 
-  // console.log("console log request", request.url);
-  var obj = {};
-  obj['results'] = [];
+  var obj = {results: array};
+
   if(request.method === 'POST') { 
     if(request.url === "/arglebargle") {
       statusCode = 404;
     } else {
       statusCode = 201;
-      request.on('data', function(d) {
-        obj['results'].push(d);
-        // console.log(obj);
-      })
     }
-    resobj = JSON.stringify(obj);
-    console.log("-------------------->",resobj);
-
+    var body = '';
+    request.on('data', function(d) {
+      body += d;
+    });
+    request.on('end', function() {
+      var parsed = JSON.parse(body);
+      array.push(parsed);
+      // console.log("--------------->",parsed);
+    });
+    if(request.url === '/classes/messages') {
+      obj = JSON.stringify(obj);
+    }
   } else if (request.method === "GET") { 
+    obj = JSON.stringify(obj);
     if(request.url === "/arglebargle") {
       statusCode = 404;
     } else {
       statusCode = 200;
-      http.get({
-        host:'127.0.0.1:3000',
-        path:'/classes/messages'
-      }, function(response) {
-        var body = '';
-        response.on('data', function(d) {
-          console.log('***********', d);
-          body += d;
-        });
-        response.on('end', function() {
-          var parsed = JSON.parse(body);
-          console.log(parsed);
-        })
-      })
-
     }
   }
   response.writeHead(statusCode, headers);
-  response.end(resobj);
+  response.end(obj);
 };
 exports.requestHandler = requestHandler;
-// module.exports = requestHandler;
 
-
-    // http.get(options, function(res) {
-    //   var body = '';
-    //   res.on('data', function(chunk) {
-    //     body += chunk;
-    //   });
-    //   res.on('end', function() {
-    //     console.log(body);
-    //   });
-    // }).on('error', function(e) {
-    //   console.log("Got error: " + e.message);
-    // }); 
 
 // These headers will allow Cross-Origin Resource Sharing (CORS).
 // This code allows this server to talk to websites that
